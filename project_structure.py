@@ -21,6 +21,7 @@ list_files = [
     f"{source_path}/components/data_ingestion.py",
     f"{source_path}/components/data_transformer.py",
     f"{source_path}/components/model_builder.py",
+    f"{source_path}/components/model_callbacks.py",
     f"{source_path}/components/model_trainer.py",
     f"{source_path}/components/model_evaluator.py",
     f"{source_path}/pipeline/__init__.py",

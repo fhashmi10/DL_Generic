@@ -1,7 +1,5 @@
 from src.entities.config_entity import ModelConfig
 import tensorflow as tf
-from pathlib import Path
-import os
 
 class ModelBuilder():
     def __init__(self, config: ModelConfig):
@@ -12,12 +10,7 @@ class ModelBuilder():
             include_top=self.config.params_include_top
         )
 
-
-    @staticmethod
-    def save_model(path: Path, model: tf.keras.Model):
-        model.save(path)
     
-
     @staticmethod
     def update_base_model(model, classes, freeze_all=True, freeze_till=0, learning_rate=0.01):
         if freeze_all:
@@ -56,7 +49,7 @@ class ModelBuilder():
             freeze_till=0,
             learning_rate=self.config.params_learning_rate
         )
-        self.save_model(path=self.config.base_model_path, model=self.model)
+        self.model.save(self.config.base_model_path)
 
     
    
