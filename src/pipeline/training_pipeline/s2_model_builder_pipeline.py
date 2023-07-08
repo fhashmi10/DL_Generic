@@ -1,22 +1,22 @@
 from src.config.config_manager import ConfigurationManager
-from src.components.data_ingestion import DataIngestion
+from src.components.model_builder import ModelBuilder
 from src import logger
 
-class DataIngestionPipeline:
+class ModelBuilderPipeline:
     def __init__(self):
         pass
 
     def main(self):
         config=ConfigurationManager()
-        data_ingestion=DataIngestion(config=config.get_data_config())
-        data_ingestion.download_data_from_URL()
+        model_builder=ModelBuilder(config=config.get_model_config())
+        model_builder.build_model()
 
 
 if __name__ == '__main__':
-    STAGE_NAME = "Data Ingestion stage"
+    STAGE_NAME = "Model Builder stage"
     try:
         logger.info(f">>>>>> {STAGE_NAME} started <<<<<<")
-        obj = DataIngestionPipeline()
+        obj = ModelBuilderPipeline()
         obj.main()
         logger.info(f">>>>>> {STAGE_NAME} completed <<<<<<\n\nx==========x")
     except Exception as e:

@@ -7,8 +7,8 @@ from src.common.utils import create_directories, remove_directories
 
 
 class DataIngestion():
-    def __init__(self, data_config: DataConfig):
-        self.config = data_config
+    def __init__(self, config: DataConfig):
+        self.config = config
 
 
     def unzip_data(self, unzip_path):

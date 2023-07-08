@@ -6,9 +6,7 @@ data:
   
 
 model:
-  base_model_dir: artifacts/models/base_model
   base_model_path: artifacts/models/base_model/model.h5
-  trained_model_dir: artifacts/models/trained_model
   trained_model_path: artifacts/models/trained_model/model.h5
 
 

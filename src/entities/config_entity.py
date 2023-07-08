@@ -12,8 +12,8 @@ class DataConfig:
 
 @dataclass(frozen=True)
 class ModelConfig:
-    root_dir: Path
-    model_path: Path
+    base_model_path: Path
+    trained_model_path: Path
     params_image_size: list
     params_learning_rate: float
     params_include_top: bool
