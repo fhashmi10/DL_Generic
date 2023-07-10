@@ -41,8 +41,8 @@ class ConfigurationManager:
     def get_train_config(self)-> TrainConfig:
         config=self.config.train
         training_data_path = Path(os.path.join(self.config.data.data_original_path, "Chicken-fecal-images"))
-        train_config=TrainConfig(trained_model_path=config.trained_model_path,
-                                base_model_path=self.config.model.base_model_path,
+        train_config=TrainConfig(base_model_path=self.config.model.base_model_path,
+                                trained_model_path=config.trained_model_path,
                                 training_data_path=training_data_path,
                                 params_epochs=self.params.EPOCHS,
                                 params_batch_size=self.params.BATCH_SIZE,

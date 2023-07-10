@@ -6,6 +6,10 @@ from pathlib import Path
 from box import ConfigBox
 from box.exceptions import BoxValueError
 from src import logger
+import dill
+from typing import Any
+import json
+
 
 @ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
@@ -36,3 +40,32 @@ def remove_directories(path_to_directories: list, verbose=True):
             shutil.rmtree(path)
             if verbose:
                 logger.info(f"removed directory at: {path}")
+
+
+@ensure_annotations
+def save_object(data: object, path: Path):
+    with open(path, "w") as f:
+        dill.dump(data, f)
+    logger.info(f"object saved at: {path}")
+
+
+@ensure_annotations
+def load_object(path: Path) -> object:
+    data = dill.load(path)
+    logger.info(f"object loaded from: {path}")
+    return data
+
+
+@ensure_annotations
+def save_json(path: Path, data: dict):
+    with open(path, "w") as f:
+        json.dump(data, f, indent=4)
+    logger.info(f"json file saved at: {path}")
+
+
+@ensure_annotations
+def load_json(path: Path) -> ConfigBox:
+    with open(path) as f:
+        content = json.load(f)
+    logger.info(f"json file loaded succesfully from: {path}")
+    return ConfigBox(content)

@@ -9,12 +9,12 @@ class ModelTrainerPipeline:
 
     def main(self):
         config=ConfigurationManager()
-        
         model_callback = ModelCallbacks(config=config.get_callback_config())
         callback_list = model_callback.get_callbacks()
 
         model_trainer=ModelTrainer(config=config.get_train_config())
-        model_trainer.train_model(callback_list=callback_list)
+        model_trainer.train_model(callback_list=callback_list, training=False)
+        model_trainer.evaluate_model()
 
 
 if __name__ == '__main__':

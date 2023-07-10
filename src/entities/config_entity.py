@@ -30,19 +30,11 @@ class CallbackConfig:
 
 @dataclass(frozen=True)
 class TrainConfig:
-    trained_model_path: Path
     base_model_path: Path
+    trained_model_path: Path
     training_data_path: Path
     params_epochs: int
     params_batch_size: int
     params_is_augmentation: bool
     params_image_size: list
 
-
-@dataclass(frozen=True)
-class EvaluationConfig:
-    path_of_model: Path
-    training_data: Path
-    all_params: dict
-    params_image_size: list
-    params_batch_size: int

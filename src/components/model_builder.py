@@ -1,5 +1,7 @@
 from src.entities.config_entity import ModelConfig
 import tensorflow as tf
+from src import logger
+import os
 
 class ModelBuilder():
     def __init__(self, config: ModelConfig):
@@ -42,14 +44,18 @@ class ModelBuilder():
     
 
     def build_model(self):
-        self.model = self.update_base_model(
-            model=self.base_model,
-            classes=self.config.params_classes,
-            freeze_all=True,
-            freeze_till=0,
-            learning_rate=self.config.params_learning_rate
-        )
-        self.model.save(self.config.base_model_path)
+        if os.path.exists(self.config.base_model_path):
+            logger.info(f"Model built already, skipping build")
+        else:
+            self.model = self.update_base_model(
+                model=self.base_model,
+                classes=self.config.params_classes,
+                freeze_all=True,
+                freeze_till=0,
+                learning_rate=self.config.params_learning_rate
+            )
+            self.model.save(self.config.base_model_path)
+            logger.info(f"Model built and saved successfully to {self.config.base_model_path}")
 
     
    

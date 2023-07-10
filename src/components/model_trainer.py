@@ -1,5 +1,7 @@
 from src.config.config_manager import TrainConfig
 import tensorflow as tf
+from src.common.utils import save_json
+from pathlib import Path
 
 class ModelTrainer():
     def __init__(self, config=TrainConfig):
@@ -56,19 +58,26 @@ class ModelTrainer():
         )
         
 
-    def train_model(self, callback_list: list):
+    def train_model(self, callback_list: list, training=True):
         self.get_base_model()
         self.train_valid_generator()
-        self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
-        self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
 
-        self.model.fit(
-            self.train_generator,
-            epochs=self.config.params_epochs,
-            steps_per_epoch=self.steps_per_epoch,
-            validation_steps=self.validation_steps,
-            validation_data=self.valid_generator,
-            callbacks=callback_list
-        )
+        if training:
+            self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
+            self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
+            self.model.fit(self.train_generator,
+                epochs=self.config.params_epochs,
+                steps_per_epoch=self.steps_per_epoch,
+                validation_steps=self.validation_steps,
+                validation_data=self.valid_generator,
+                callbacks=callback_list
+            )
+            self.model.save(self.config.trained_model_path)
+        else:
+            self.model=tf.keras.models.load_model(self.config.trained_model_path)
+        
 
-        self.model.save(self.config.trained_model_path)
+    def evaluate_model(self):
+        self.score = self.model.evaluate(self.valid_generator)
+        scores = {"loss": self.score[0], "accuracy": self.score[1]}
+        save_json(path=Path("scores.json"), data=scores)
