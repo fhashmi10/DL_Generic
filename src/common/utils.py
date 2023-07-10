@@ -7,8 +7,8 @@ from box import ConfigBox
 from box.exceptions import BoxValueError
 from src import logger
 import dill
-from typing import Any
 import json
+import base64
 
 
 @ensure_annotations
@@ -69,3 +69,10 @@ def load_json(path: Path) -> ConfigBox:
         content = json.load(f)
     logger.info(f"json file loaded succesfully from: {path}")
     return ConfigBox(content)
+
+
+def decodeImage(imgstring, fileName):
+    imgdata = base64.b64decode(imgstring)
+    with open(fileName, 'wb') as f:
+        f.write(imgdata)
+        f.close()
