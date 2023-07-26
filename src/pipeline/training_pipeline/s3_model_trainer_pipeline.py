@@ -1,13 +1,16 @@
-from src.config.config_manager import ConfigurationManager
+"""Module to create model training pipeline"""
+from src.configuration.configuration_manager import ConfigurationManager
 from src.components.model_callbacks import ModelCallbacks
 from src.components.model_trainer import ModelTrainer
 from src import logger
 
 class ModelTrainerPipeline:
+    """Class to create model training pipeline"""
     def __init__(self):
         pass
 
-    def main(self):
+    def train(self):
+        """Method to perfom model training"""
         config=ConfigurationManager()
         model_callback = ModelCallbacks(config=config.get_callback_config())
         callback_list = model_callback.get_callbacks()
@@ -22,7 +25,7 @@ if __name__ == '__main__':
     try:
         logger.info(f">>>>>> {STAGE_NAME} started <<<<<<")
         obj = ModelTrainerPipeline()
-        obj.main()
+        obj.train()
         logger.info(f">>>>>> {STAGE_NAME} completed <<<<<<\n\nx==========x")
     except Exception as e:
         logger.exception(e)

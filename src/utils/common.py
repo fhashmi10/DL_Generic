@@ -1,0 +1,134 @@
+"""Module to hold all common util methods"""
+import os
+import shutil
+from pathlib import Path
+import json
+import base64
+import yaml
+import dill
+from box import ConfigBox, exceptions
+
+from src import logger
+
+
+@staticmethod
+def read_yaml_configbox(path_to_yaml: Path) -> ConfigBox:
+    """Method to read yaml and return a ConfigBox instance
+    A configbox helps in accessing yaml contents with . syntax"""
+    try:
+        with open(path_to_yaml, encoding='utf8') as yaml_file:
+            content = yaml.safe_load(yaml_file)
+            logger.info("yaml file loaded successfully: %s", path_to_yaml)
+            return ConfigBox(content)
+    except exceptions.BoxValueError as ex:
+        logger.exception("yaml file is empty: %s", path_to_yaml)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def create_directories(path_to_directories: list, verbose=True):
+    """Method to create directories"""
+    try:
+        for path in path_to_directories:
+            if not os.path.exists(path):
+                os.makedirs(path, exist_ok=True)
+                if verbose:
+                    logger.info("created directory at %s:", path)
+    except IOError as ex:
+        logger.exception("Error creating directories: %s", path_to_directories)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def remove_directories(path_to_directories: list, verbose=True):
+    """Method to remove directories"""
+    try:
+        for path in path_to_directories:
+            if os.path.exists(path):
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                    if verbose:
+                        logger.info("removed directory at %s:", path)
+                elif os.path.isfile(path):
+                    os.remove(path)
+                    if verbose:
+                        logger.info("removed file at %s:", path)
+    except IOError as ex:
+        logger.exception("Error removing directories: %s", path_to_directories)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def save_object(obj, file_path: Path):
+    """Method to save an object to a file"""
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w") as f:
+            dill.dump(file_path, f)
+    except IOError as ex:
+        logger.exception("Error saving object at: %s", file_path)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def load_object(file_path: Path):
+    """Method to load an object from a file"""
+    try:
+        with open(file_path, "rb") as file_obj:
+            return dill.load(file_obj)
+    except IOError as ex:
+        logger.exception("Error loading object from: %s", file_path)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def save_json(file_path: Path, data: dict):
+    """Method to dump data to a json file"""
+    try:
+        with open(file_path, "w", encoding="utf8") as file:
+            json.dump(data, file, indent=4)
+        logger.info("json file saved at: %s", file_path)
+    except IOError as ex:
+        logger.exception("Error loading object from: %s", file_path)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+@staticmethod
+def load_json(file_path: Path) -> ConfigBox:
+    """Method to load data from a json file"""
+    try:
+        with open(file_path, encoding="utf8") as file:
+            content = json.load(file)
+        logger.info("json file loaded succesfully from: %s", file_path)
+        return ConfigBox(content)
+    except IOError as ex:
+        logger.exception("Error loading json from: %s", file_path)
+        raise ex
+    except Exception as ex:
+        raise ex
+
+
+@staticmethod
+def decode_image(imgstring, file_path):
+    """Method to decode an image"""
+    try:
+        imgdata = base64.b64decode(imgstring)
+        with open(file_path, 'wb', encoding="utf8") as file:
+            file.write(imgdata)
+            file.close()
+    except IOError as ex:
+        logger.exception("Error loading image from: %s", file_path)
+        raise ex
+    except Exception as ex:
+        raise ex

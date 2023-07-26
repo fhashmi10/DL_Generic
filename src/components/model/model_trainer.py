@@ -1,18 +1,22 @@
-from src.config.config_manager import TrainConfig
+"""Module to train models"""
+from src.configuration.configuration_manager import TrainConfig
 import tensorflow as tf
-from src.common.utils import save_json
+from src.utils.common import save_json
 from pathlib import Path
 
 class ModelTrainer():
+    """Class to train models"""
     def __init__(self, config=TrainConfig):
         self.config = config
 
     
     def get_base_model(self):
+        """Method to get the base model"""
         self.model=tf.keras.models.load_model(self.config.base_model_path)
 
     
     def train_valid_generator(self):
+        """Method to create train and validation generators"""
         datagenerator_kwargs = dict(
             rescale = 1./255,
             validation_split=0.20 #split for validation set
@@ -59,6 +63,7 @@ class ModelTrainer():
         
 
     def train_model(self, callback_list: list, training=True):
+        """Method to invoke model training"""
         self.get_base_model()
         self.train_valid_generator()
 
@@ -78,6 +83,7 @@ class ModelTrainer():
         
 
     def evaluate_model(self):
+        """Method to invoke model evaluation"""
         self.score = self.model.evaluate(self.valid_generator)
         scores = {"loss": self.score[0], "accuracy": self.score[1]}
         save_json(path=Path("scores.json"), data=scores)

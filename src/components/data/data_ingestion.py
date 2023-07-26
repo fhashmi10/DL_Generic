@@ -1,17 +1,20 @@
+""""Module to perform data ingestion"""
 import os
 import urllib.request as request
 from src import logger
 import zipfile
 from src.entities.config_entity import DataConfig
-from src.common.utils import create_directories, remove_directories
+from src.utils.common import create_directories, remove_directories
 
 
 class DataIngestion():
+    """Class to perform data ingestion"""
     def __init__(self, config: DataConfig):
         self.config = config
 
 
     def unzip_data(self, unzip_path):
+            """Method to unzip data"""
             create_directories([unzip_path])
             with zipfile.ZipFile(self.config.data_download_path, 'r') as zip_ref:
                 zip_ref.extractall(unzip_path)
@@ -19,7 +22,7 @@ class DataIngestion():
 
 
     def download_data_from_URL(self, skip_existing=True):
-        #download file
+        """Method to download data from URL"""
         download_path=self.config.data_download_path
         download_dir=os.path.dirname(os.path.abspath(download_path))
         create_directories([download_dir])

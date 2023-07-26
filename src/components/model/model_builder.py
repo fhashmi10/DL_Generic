@@ -1,9 +1,11 @@
+"""Module to build base models"""
 from src.entities.config_entity import ModelConfig
 import tensorflow as tf
 from src import logger
 import os
 
 class ModelBuilder():
+    """Class to build base models"""
     def __init__(self, config: ModelConfig):
         self.config = config
         self.base_model = tf.keras.applications.vgg16.VGG16(
@@ -15,6 +17,7 @@ class ModelBuilder():
     
     @staticmethod
     def update_base_model(model, classes, freeze_all=True, freeze_till=0, learning_rate=0.01):
+        """Method to update base model"""
         if freeze_all:
             for layer in model.layers:
                 model.trainable = False
@@ -44,6 +47,7 @@ class ModelBuilder():
     
 
     def build_model(self):
+        """Method to invoke model building"""
         if os.path.exists(self.config.base_model_path):
             logger.info(f"Model built already, skipping build")
         else:
