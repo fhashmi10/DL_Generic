@@ -1,6 +1,6 @@
 """Module to create data ingestion pipeline"""
 from src.configuration.configuration_manager import ConfigurationManager
-from src.components.data_ingestion import DataIngestion
+from src.components.data.data_ingestion import DataIngestion
 from src import logger
 
 class DataIngestionPipeline:
@@ -12,7 +12,7 @@ class DataIngestionPipeline:
         """Method to perform data ingestion"""
         config=ConfigurationManager()
         data_ingestion=DataIngestion(config=config.get_data_config())
-        data_ingestion.download_data_from_URL()
+        data_ingestion.ingest_data()
 
 
 if __name__ == '__main__':

@@ -1,49 +1,82 @@
 """"Module to perform data ingestion"""
 import os
+from pathlib import Path
 import urllib.request as request
-from src import logger
 import zipfile
 from src.entities.config_entity import DataConfig
 from src.utils.common import create_directories, remove_directories
+from src import logger
 
 
 class DataIngestion():
     """Class to perform data ingestion"""
+
     def __init__(self, config: DataConfig):
         self.config = config
 
+    def download_data_from_url(self):
+        """Method to download data from URL"""
+        try:
+            download_path = self.config.data_download_path
+            download_dir = os.path.dirname(os.path.abspath(download_path))
+            create_directories([download_dir])
+            if not os.path.exists(download_path):
+                file_name, headers = request.urlretrieve(
+                    url=self.config.source_URL,
+                    filename=download_path
+                )
+                logger.info("%s download! with following info: \n%s",
+                            file_name, headers)
+            else:
+                logger.info("Data file already exists, skipping download.")
+        except AttributeError as ex:
+            logger.exception("Error downloading data from URL")
+            raise ex
+        except Exception as ex:
+            raise ex
+
+    @staticmethod
+    def skip_processing(unzip_path: Path, skip_existing: bool) -> bool:
+        """Method to determine if need to skip processing"""
+        try:
+            skip_process: bool = False
+            if os.path.exists(unzip_path):
+                # option 1: remove existing unzipped files
+                if not skip_existing:
+                    remove_directories(unzip_path)
+                # option 2: skip existing unzipped files
+                else:
+                    logger.info(
+                        "Unzipped data already exists, skipping unzip.")
+                    skip_process = True
+            return skip_process
+        except Exception as ex:
+            raise ex
 
     def unzip_data(self, unzip_path):
-            """Method to unzip data"""
+        """Method to unzip data"""
+        try:
             create_directories([unzip_path])
             with zipfile.ZipFile(self.config.data_download_path, 'r') as zip_ref:
                 zip_ref.extractall(unzip_path)
             logger.info("Data unzipped successfully.")
+        except AttributeError as ex:
+            raise ex
+        except Exception as ex:
+            raise ex
 
-
-    def download_data_from_url(self, skip_existing=True):
-        """Method to download data from URL"""
-        download_path=self.config.data_download_path
-        download_dir=os.path.dirname(os.path.abspath(download_path))
-        create_directories([download_dir])
-        if not os.path.exists(download_path):
-            file_name, headers = request.urlretrieve(
-                url = self.config.source_URL,
-                filename = download_path
-            )
-            logger.info("%s download! with following info: \n%s", file_name, headers)
-        else:
-            logger.info("Data file already exists, skipping download.")
-        
-        #unzip file
-        unzip_path=self.config.data_original_path
-        if os.path.exists(unzip_path):
-            #option 1: remove existing unzipped files
-            if not skip_existing:
-                remove_directories(unzip_path)
-                self.unzip_data(unzip_path)
-            #option 2: skip existing unzipped files
-            else:
-                logger.info("Unzipped data already exists, skipping unzip.")
-        else:
-            self.unzip_data(unzip_path)
+    def ingest_data(self, skip_existing=True):
+        """Method to ingest data"""
+        try:
+            # Download data
+            self.download_data_from_url()
+            # Unzip downloaded data
+            if not self.skip_processing(
+                unzip_path=self.config.data_original_path, skip_existing=skip_existing):
+                self.unzip_data(self.config.data_original_path)
+        except AttributeError as ex:
+            logger.exception("Error finding attribute: %s", ex)
+            raise ex
+        except Exception as ex:
+            logger.exception("Exception occured: %s", ex)
+            raise ex
