@@ -49,7 +49,7 @@ class ModelBuilder():
     def build_model(self):
         """Method to invoke model building"""
         if os.path.exists(self.config.base_model_path):
-            logger.info(f"Model built already, skipping build")
+            logger.info("Model built already, skipping build.")
         else:
             self.model = self.update_base_model(
                 model=self.base_model,
@@ -59,7 +59,7 @@ class ModelBuilder():
                 learning_rate=self.config.params_learning_rate
             )
             self.model.save(self.config.base_model_path)
-            logger.info(f"Model built and saved successfully to {self.config.base_model_path}")
+            logger.info("Model built and saved successfully to: %s", self.config.base_model_path)
 
     
    

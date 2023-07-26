@@ -18,22 +18,22 @@ class DataIngestion():
             create_directories([unzip_path])
             with zipfile.ZipFile(self.config.data_download_path, 'r') as zip_ref:
                 zip_ref.extractall(unzip_path)
-            logger.info(f"Data unzipped successfully!")
+            logger.info("Data unzipped successfully.")
 
 
-    def download_data_from_URL(self, skip_existing=True):
+    def download_data_from_url(self, skip_existing=True):
         """Method to download data from URL"""
         download_path=self.config.data_download_path
         download_dir=os.path.dirname(os.path.abspath(download_path))
         create_directories([download_dir])
         if not os.path.exists(download_path):
-            filename, headers = request.urlretrieve(
+            file_name, headers = request.urlretrieve(
                 url = self.config.source_URL,
                 filename = download_path
             )
-            logger.info(f"{filename} download! with following info: \n{headers}")
+            logger.info("%s download! with following info: \n%s", file_name, headers)
         else:
-            logger.info(f"Data file already exists, skipping download")
+            logger.info("Data file already exists, skipping download.")
         
         #unzip file
         unzip_path=self.config.data_original_path
@@ -44,6 +44,6 @@ class DataIngestion():
                 self.unzip_data(unzip_path)
             #option 2: skip existing unzipped files
             else:
-                logger.info(f"Unzipped data already exists, skipping unzip")
+                logger.info("Unzipped data already exists, skipping unzip.")
         else:
             self.unzip_data(unzip_path)

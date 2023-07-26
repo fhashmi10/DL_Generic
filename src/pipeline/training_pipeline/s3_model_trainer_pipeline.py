@@ -23,10 +23,10 @@ class ModelTrainerPipeline:
 if __name__ == '__main__':
     STAGE_NAME = "Model Trainer stage"
     try:
-        logger.info(f">>>>>> {STAGE_NAME} started <<<<<<")
+        logger.info("%s started", STAGE_NAME)
         obj = ModelTrainerPipeline()
         obj.train()
-        logger.info(f">>>>>> {STAGE_NAME} completed <<<<<<\n\nx==========x")
+        logger.info("%s completed\nx==========x", STAGE_NAME)
     except Exception as e:
         logger.exception(e)
         raise e

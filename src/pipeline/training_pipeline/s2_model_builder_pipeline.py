@@ -18,10 +18,10 @@ class ModelBuilderPipeline:
 if __name__ == '__main__':
     STAGE_NAME = "Model Builder stage"
     try:
-        logger.info(f">>>>>> {STAGE_NAME} started <<<<<<")
+        logger.info("%s started", STAGE_NAME)
         obj = ModelBuilderPipeline()
         obj.build()
-        logger.info(f">>>>>> {STAGE_NAME} completed <<<<<<\n\nx==========x")
+        logger.info("%s completed\nx==========x", STAGE_NAME)
     except Exception as e:
         logger.exception(e)
         raise e

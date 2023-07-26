@@ -18,10 +18,10 @@ class DataIngestionPipeline:
 if __name__ == '__main__':
     STAGE_NAME = "Data Ingestion stage"
     try:
-        logger.info(f">>>>>> {STAGE_NAME} started <<<<<<")
+        logger.info("%s started", STAGE_NAME)
         obj = DataIngestionPipeline()
         obj.ingest()
-        logger.info(f">>>>>> {STAGE_NAME} completed <<<<<<\n\nx==========x")
+        logger.info("%s completed\nx==========x", STAGE_NAME)
     except Exception as e:
         logger.exception(e)
         raise e
