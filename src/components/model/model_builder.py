@@ -64,7 +64,7 @@ class ModelBuilder():
 
             # Get base model
             base_model = self.get_base_model()
-            
+
             # Update base model
             model = self.update_base_model(
                 model=base_model,

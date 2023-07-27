@@ -6,7 +6,7 @@ from pathlib import Path
 @dataclass(frozen=True)
 class DataConfig:
     """Class to map data config"""
-    source_URL: str
+    source_url: str
     data_download_path: Path
     data_original_path: Path
     data_transformed_path: Path
@@ -21,7 +21,6 @@ class ModelConfig:
     params_include_top: bool
     params_weights: str
     params_classes: int
-
 
 
 @dataclass(frozen=True)
@@ -42,4 +41,3 @@ class TrainConfig:
     params_batch_size: int
     params_is_augmentation: bool
     params_image_size: list
-

@@ -1,5 +1,5 @@
 data:
-  source_URL: https://github.com/entbappy/Branching-tutorial/raw/master/Chicken-fecal-images.zip
+  source_url: https://github.com/entbappy/Branching-tutorial/raw/master/Chicken-fecal-images.zip
   data_download_path: artifacts/data/data.zip
   data_original_path: artifacts/data/original_data
   data_transformed_path: artifacts/data/transformed_data
