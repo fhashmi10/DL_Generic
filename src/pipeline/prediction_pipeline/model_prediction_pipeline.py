@@ -14,7 +14,7 @@ class PredictionPipeline:
         """Method to perform prediction"""
         try:
             config = ConfigurationManager()
-            model_predictor = ModelPredictor(model_config=config.get_model_config())
+            model_predictor = ModelPredictor(train_config=config.get_train_config())
             prediction = model_predictor.predict(self.filename)
 
             if prediction[0] == 1:

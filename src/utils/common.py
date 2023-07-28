@@ -144,11 +144,11 @@ def decode_image(imgstring, file_path):
     """Method to decode an image"""
     try:
         imgdata = base64.b64decode(imgstring)
-        with open(file_path, 'wb', encoding="utf8") as file:
+        with open(file_path, 'wb') as file:
             file.write(imgdata)
             file.close()
     except IOError as ex:
-        logger.exception("Error loading image from: %s", file_path)
+        logger.exception("Error decoding image at: %s", file_path)
         raise ex
     except Exception as ex:
         raise ex

@@ -30,7 +30,7 @@ def train():
     except Exception as ex:
         logger.exception("Error in prediction %s", ex)
         return "Exception occured: Check logs"
-    
+
 @app.route("/predict", methods=['POST'])
 @cross_origin()
 def predict():
@@ -38,8 +38,8 @@ def predict():
     try:
         file_name = "inputImage.jpg"
         image = request.json['image']
+        #decode_image(image, file_name)
         predictor = PredictionPipeline(file_name)
-        decode_image(image, file_name)
         result = predictor.predict()
         return jsonify(result)
     except Exception as ex:
