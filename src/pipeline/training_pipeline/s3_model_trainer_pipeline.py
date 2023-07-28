@@ -17,7 +17,7 @@ class ModelTrainerPipeline:
             callback_list = model_callback.get_callbacks()
 
             model_trainer=ModelTrainer(config=config.get_train_config())
-            model_trainer.train_model(callback_list=callback_list, training=False)
+            model_trainer.train_model(callback_list=callback_list)
             model_trainer.evaluate_model()
         except Exception as ex:
             raise ex

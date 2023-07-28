@@ -2,7 +2,7 @@
 import os
 import tensorflow as tf
 from src.entities.config_entity import ModelConfig
-from src.utils.common import remove_directories
+from src.utils.common import remove_directories, create_directories
 from src import logger
 
 
@@ -75,6 +75,7 @@ class ModelBuilder():
             )
 
             # Save updated base model
+            create_directories([self.config.base_model_path], is_file_path=True)
             model.save(self.config.base_model_path)
             logger.info("Model built and saved successfully to: %s",
                         self.config.base_model_path)

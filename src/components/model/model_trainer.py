@@ -1,8 +1,8 @@
 """Module to train models"""
-from src.configuration.configuration_manager import TrainConfig
-import tensorflow as tf
-from src.utils.common import save_json
 from pathlib import Path
+import tensorflow as tf
+from src.configuration.configuration_manager import TrainConfig
+from src.utils.common import save_json
 
 class ModelTrainer():
     """Class to train models"""
@@ -79,6 +79,7 @@ class ModelTrainer():
             )
             self.model.save(self.config.trained_model_path)
         else:
+            # todo: check path exists - if not load base and do training again
             self.model=tf.keras.models.load_model(self.config.trained_model_path)
         
 
@@ -86,4 +87,4 @@ class ModelTrainer():
         """Method to invoke model evaluation"""
         self.score = self.model.evaluate(self.valid_generator)
         scores = {"loss": self.score[0], "accuracy": self.score[1]}
-        save_json(path=Path("scores.json"), data=scores)
+        save_json(file_path=Path("scores.json"), data=scores)
