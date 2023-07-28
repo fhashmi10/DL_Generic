@@ -1,90 +1,53 @@
 """Module to train models"""
-from pathlib import Path
 import tensorflow as tf
 from src.configuration.configuration_manager import TrainConfig
-from src.utils.common import save_json
+from src.components.data.data_generator import DataGenerator
+from src import logger
+
 
 class ModelTrainer():
     """Class to train models"""
+
     def __init__(self, config=TrainConfig):
         self.config = config
 
-    
     def get_base_model(self):
         """Method to get the base model"""
-        self.model=tf.keras.models.load_model(self.config.base_model_path)
+        try:
+            return tf.keras.models.load_model(self.config.base_model_path)
+        except AttributeError as ex:
+            logger.exception("Error loading base model.")
+            raise ex
+        except Exception as ex:
+            raise ex
 
-    
-    def train_valid_generator(self):
-        """Method to create train and validation generators"""
-        datagenerator_kwargs = dict(
-            rescale = 1./255,
-            validation_split=0.20 #split for validation set
-            )
-
-        dataflow_kwargs = dict(
-            target_size=self.config.params_image_size[:-1],
-            batch_size=self.config.params_batch_size,
-            interpolation="bilinear"
-            )
-
-        dataaug_kwargs = dict(
-            rotation_range=40,
-            horizontal_flip=True,
-            width_shift_range=0.2,
-            height_shift_range=0.2,
-            shear_range=0.2,
-            zoom_range=0.2
-            )
-        
-
-        if self.config.params_is_augmentation:
-            imagedatagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
-                **dataaug_kwargs,
-                **datagenerator_kwargs
-            )
-        else:
-            imagedatagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
-            **datagenerator_kwargs
-            )
-
-        self.train_generator = imagedatagenerator.flow_from_directory(
-            directory=self.config.training_data_path,
-            subset="training",
-            shuffle=True,
-            **dataflow_kwargs
-        )
-        self.valid_generator = imagedatagenerator.flow_from_directory(
-            directory=self.config.training_data_path,
-            subset="validation",
-            shuffle=False,
-            **dataflow_kwargs
-        )
-        
-
-    def train_model(self, callback_list: list, training=True):
+    def train_model(self, callback_list: list):
         """Method to invoke model training"""
-        self.get_base_model()
-        self.train_valid_generator()
+        try:
+            # Get base model
+            model = self.get_base_model()
 
-        if training:
-            self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
-            self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
-            self.model.fit(self.train_generator,
-                epochs=self.config.params_epochs,
-                steps_per_epoch=self.steps_per_epoch,
-                validation_steps=self.validation_steps,
-                validation_data=self.valid_generator,
-                callbacks=callback_list
-            )
-            self.model.save(self.config.trained_model_path)
-        else:
-            # todo: check path exists - if not load base and do training again
-            self.model=tf.keras.models.load_model(self.config.trained_model_path)
-        
+            # Get train and valid generator
+            image_data_generator = DataGenerator(config=self.config)
+            image_data_generator.create_image_data_generator()
+            train_generator = image_data_generator.get_train_generator()
+            valid_generator = image_data_generator.get_valid_generator()
 
-    def evaluate_model(self):
-        """Method to invoke model evaluation"""
-        self.score = self.model.evaluate(self.valid_generator)
-        scores = {"loss": self.score[0], "accuracy": self.score[1]}
-        save_json(file_path=Path("scores.json"), data=scores)
+            steps_per_epoch = train_generator.samples // train_generator.batch_size
+            validation_steps = valid_generator.samples // valid_generator.batch_size
+
+            # Train model
+            model.fit(train_generator,
+                        epochs=self.config.params_epochs,
+                        steps_per_epoch=steps_per_epoch,
+                        validation_steps=validation_steps,
+                        validation_data=valid_generator,
+                        callbacks=callback_list
+                        )
+            model.save(self.config.trained_model_path)
+        except AttributeError as ex:
+            logger.exception("Error finding attribute: %s", ex)
+            raise ex
+        except Exception as ex:
+            logger.exception("Exception occured: %s", ex)
+            raise ex

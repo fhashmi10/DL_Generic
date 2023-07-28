@@ -11,6 +11,12 @@ from src import logger
 class ConfigurationManager:
     """Class to manage configuration"""
 
+    def __new__(cls):
+        """ Make class singleton - so init only runs once"""
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(ConfigurationManager, cls).__new__(cls)
+        return cls.instance
+
     def __init__(self, config_file_path=CONFIG_FILE_PATH, params_file_path=PARAMS_FILE_PATH):
         try:
             self.config = read_yaml_configbox(config_file_path)

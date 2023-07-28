@@ -18,7 +18,6 @@ class ModelTrainerPipeline:
 
             model_trainer=ModelTrainer(config=config.get_train_config())
             model_trainer.train_model(callback_list=callback_list)
-            model_trainer.evaluate_model()
         except Exception as ex:
             raise ex
 
