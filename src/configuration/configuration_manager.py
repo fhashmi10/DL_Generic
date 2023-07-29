@@ -13,12 +13,12 @@ from src import logger
 class ConfigurationManager:
     """Class to manage configuration"""
 
-    def __init__(self, config_file_path=CONFIG_FILE_PATH, params_file_path=PARAMS_FILE_PATH):
+    def __init__(self):
         try:
             logger.info(
                 "Initializing configuration. This should only happen once.")
-            self.config = read_yaml_configbox(config_file_path)
-            self.params = read_yaml_configbox(params_file_path)
+            self.config = read_yaml_configbox(CONFIG_FILE_PATH)
+            self.params = read_yaml_configbox(PARAMS_FILE_PATH)
         except EnsureError as ex:
             logger.exception("Problem reading parameters yaml file.")
             raise ex
