@@ -1,21 +1,15 @@
 """"Module to create data generator"""
 import tensorflow as tf
-
-from src.entities.config_entity import TrainConfig
 from src import logger
+from src.singleton import Singleton
 
 
+@Singleton
 class DataGenerator():
     """Class to create data generator"""
 
-    def __new__(cls, config: TrainConfig):
-        """ Make class singleton - so init only runs once"""
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(DataGenerator, cls).__new__(cls)
-        return cls.instance
-
-    def __init__(self, config: TrainConfig):
-        self.config = config
+    def __init__(self):
+        logger.info("Initializing Data Generator. This should only happen once.")
         self.train_generator: tf.keras.preprocessing.image.DirectoryIterator
         self.valid_generator: tf.keras.preprocessing.image.DirectoryIterator
 
@@ -29,11 +23,12 @@ class DataGenerator():
             logger.exception("Error getting datagenerator kwargs: %s", ex)
             raise ex
 
-    def get_dataflow_kwargs(self) -> dict:
+    @staticmethod
+    def get_dataflow_kwargs(config) -> dict:
         """Method to get the datagenerator kwarg"""
         try:
-            return {"target_size": self.config.params_image_size[:-1],
-                    "batch_size": self.config.params_batch_size,
+            return {"target_size": config.params_image_size[:-1],
+                    "batch_size": config.params_batch_size,
                     "interpolation": "bilinear"}
         except Exception as ex:
             logger.exception("Error getting dataflow kwargs: %s", ex)
@@ -53,14 +48,16 @@ class DataGenerator():
             logger.exception("Error getting dataaug kwargs: %s", ex)
             raise ex
 
-    def create_image_data_generator(self):
+    def create_image_data_generator(self, config):
         """Method to invoke the creation of image data generator"""
         try:
+            # Get keyword arguments
             dataaug_kwargs = self.get_dataaug_kwargs()
             datagenerator_kwargs = self.get_datagenerator_kwargs()
-            dataflow_kwargs = self.get_dataflow_kwargs()
+            dataflow_kwargs = self.get_dataflow_kwargs(config)
 
-            if self.config.params_is_augmentation:
+            # Define image data generator
+            if config.params_is_augmentation:
                 imagedatagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
                     **dataaug_kwargs,
                     **datagenerator_kwargs
@@ -71,14 +68,14 @@ class DataGenerator():
                 )
 
             self.train_generator = imagedatagenerator.flow_from_directory(
-                directory=self.config.training_data_path,
+                directory=config.training_data_path,
                 subset="training",
                 shuffle=True,
                 **dataflow_kwargs
             )
 
             self.valid_generator = imagedatagenerator.flow_from_directory(
-                directory=self.config.training_data_path,
+                directory=config.training_data_path,
                 subset="validation",
                 shuffle=False,
                 **dataflow_kwargs

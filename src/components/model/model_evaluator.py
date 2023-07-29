@@ -31,7 +31,7 @@ class ModelEvaluator():
             model = self.get_trained_model()
 
             # Get valid generator
-            image_data_generator = DataGenerator(config=self.config)
+            image_data_generator = DataGenerator.instance()
             valid_generator = image_data_generator.get_valid_generator()
 
             # Evaluate

@@ -5,20 +5,18 @@ from ensure import EnsureError
 from src.configuration import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from src.utils.common import read_yaml_configbox
 from src.entities.config_entity import DataConfig, ModelConfig, CallbackConfig, TrainConfig
+from src.singleton import Singleton
 from src import logger
 
 
+@Singleton
 class ConfigurationManager:
     """Class to manage configuration"""
 
-    def __new__(cls):
-        """ Make class singleton - so init only runs once"""
-        if not hasattr(cls, 'instance'):
-            cls.instance = super(ConfigurationManager, cls).__new__(cls)
-        return cls.instance
-
     def __init__(self, config_file_path=CONFIG_FILE_PATH, params_file_path=PARAMS_FILE_PATH):
         try:
+            logger.info(
+                "Initializing configuration. This should only happen once.")
             self.config = read_yaml_configbox(config_file_path)
             self.params = read_yaml_configbox(params_file_path)
         except EnsureError as ex:
@@ -82,7 +80,7 @@ class ConfigurationManager:
         try:
             config = self.config.train
             training_data_path = Path(os.path.join(
-                self.config.data.data_original_path, "."))#Chicken-fecal-images
+                self.config.data.data_original_path, "."))  # Chicken-fecal-images
             train_config = TrainConfig(base_model_path=self.config.model.base_model_path,
                                        trained_model_path=config.trained_model_path,
                                        training_data_path=training_data_path,

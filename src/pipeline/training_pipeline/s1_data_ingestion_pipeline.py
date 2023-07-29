@@ -13,7 +13,7 @@ class DataIngestionPipeline:
     def ingest(self):
         """Method to perform data ingestion"""
         try:
-            config = ConfigurationManager()
+            config = ConfigurationManager.instance()
             data_ingestion = DataIngestion(config=config.get_data_config())
             data_ingestion.ingest_data()
         except Exception as ex:

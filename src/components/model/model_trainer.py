@@ -28,8 +28,8 @@ class ModelTrainer():
             model = self.get_base_model()
 
             # Get train and valid generator
-            image_data_generator = DataGenerator(config=self.config)
-            image_data_generator.create_image_data_generator()
+            image_data_generator = DataGenerator.instance()
+            image_data_generator.create_image_data_generator(self.config)
             train_generator = image_data_generator.get_train_generator()
             valid_generator = image_data_generator.get_valid_generator()
 
