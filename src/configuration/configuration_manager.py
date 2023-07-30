@@ -5,18 +5,14 @@ from ensure import EnsureError
 from src.configuration import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from src.utils.common import read_yaml_configbox
 from src.entities.config_entity import DataConfig, ModelConfig, CallbackConfig, TrainConfig
-from src.singleton import Singleton
 from src import logger
 
 
-@Singleton
 class ConfigurationManager:
     """Class to manage configuration"""
 
     def __init__(self):
         try:
-            logger.info(
-                "Initializing configuration. This should only happen once.")
             self.config = read_yaml_configbox(CONFIG_FILE_PATH)
             self.params = read_yaml_configbox(PARAMS_FILE_PATH)
         except EnsureError as ex:
