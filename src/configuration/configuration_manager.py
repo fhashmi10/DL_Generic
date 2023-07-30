@@ -1,10 +1,9 @@
 """Module to map data from config to dataclasses"""
-import os
-from pathlib import Path
 from ensure import EnsureError
 from src.configuration import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from src.utils.common import read_yaml_configbox
-from src.entities.config_entity import DataConfig, ModelConfig, CallbackConfig, TrainConfig
+from src.entities.config_entity import DataConfig, ModelConfig, \
+    CallbackConfig, TrainConfig, EvaluationConfig
 from src import logger
 
 
@@ -29,6 +28,7 @@ class ConfigurationManager:
             data_config = DataConfig(source_url=config.source_url,
                                      data_download_path=config.data_download_path,
                                      data_original_path=config.data_original_path,
+                                     data_original_root_path=config.data_original_root_path,
                                      data_transformed_path=config.data_transformed_path)
             return data_config
         except AttributeError as ex:
@@ -74,17 +74,29 @@ class ConfigurationManager:
     def get_train_config(self) -> TrainConfig:
         """Method to manage training configuration"""
         try:
-            config = self.config.train
-            training_data_path = Path(os.path.join(
-                self.config.data.data_original_path, "."))  # Chicken-fecal-images
-            train_config = TrainConfig(base_model_path=self.config.model.base_model_path,
+            config = self.config.model
+            train_config = TrainConfig(base_model_path=config.base_model_path,
                                        trained_model_path=config.trained_model_path,
-                                       training_data_path=training_data_path,
+                                       training_data_path=self.config.data.data_original_root_path,
+                                       params_is_augmentation=self.params.AUGMENTATION,
                                        params_epochs=self.params.EPOCHS,
                                        params_batch_size=self.params.BATCH_SIZE,
-                                       params_is_augmentation=self.params.AUGMENTATION,
                                        params_image_size=self.params.IMAGE_SIZE)
             return train_config
+        except AttributeError as ex:
+            logger.exception("Error finding attribute: %s", ex)
+            raise ex
+        except Exception as ex:
+            logger.exception("Exception occured: %s", ex)
+            raise ex
+
+    def get_evaluation_config(self) -> EvaluationConfig:
+        """Method to manage evaluation configuration"""
+        try:
+            eval_config = EvaluationConfig(
+                trained_model_path=self.config.model.trained_model_path,
+                evaluation_score_json_path=self.config.model.evaluation_score_json_path)
+            return eval_config
         except AttributeError as ex:
             logger.exception("Error finding attribute: %s", ex)
             raise ex

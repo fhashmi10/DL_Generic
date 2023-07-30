@@ -1,7 +1,6 @@
 """Module to evaluate models"""
-from pathlib import Path
 import tensorflow as tf
-from src.configuration.configuration_manager import TrainConfig
+from src.entities.config_entity import EvaluationConfig
 from src.components.data.data_generator import DataGenerator
 from src.utils.common import save_json
 from src import logger
@@ -10,7 +9,7 @@ from src import logger
 class ModelEvaluator():
     """Class to evaluate models"""
 
-    def __init__(self, config=TrainConfig):
+    def __init__(self, config=EvaluationConfig):
         self.config = config
 
     def get_trained_model(self):
@@ -35,9 +34,10 @@ class ModelEvaluator():
             valid_generator = image_data_generator.get_valid_generator()
 
             # Evaluate
-            score = model.evaluate(valid_generator)
-            scores = {"loss": score[0], "accuracy": score[1]}
-            save_json(file_path=Path("scores.json"), data=scores)
+            model_score = model.evaluate(valid_generator)
+            result = {"loss": model_score[0], "accuracy": model_score[1]}
+            save_json(
+                file_path=self.config.evaluation_score_json_path, data=result)
         except AttributeError as ex:
             logger.exception("Error finding attribute: %s", ex)
             raise ex

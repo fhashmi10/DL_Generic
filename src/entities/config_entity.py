@@ -9,6 +9,7 @@ class DataConfig:
     source_url: str
     data_download_path: Path
     data_original_path: Path
+    data_original_root_path: Path
     data_transformed_path: Path
 
 
@@ -37,7 +38,13 @@ class TrainConfig:
     base_model_path: Path
     trained_model_path: Path
     training_data_path: Path
+    params_is_augmentation: bool
     params_epochs: int
     params_batch_size: int
-    params_is_augmentation: bool
     params_image_size: list
+
+@dataclass
+class EvaluationConfig:
+    """Class to map evaluation config"""
+    trained_model_path: Path
+    evaluation_score_json_path: Path

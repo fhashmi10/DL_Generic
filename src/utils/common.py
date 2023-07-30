@@ -114,6 +114,7 @@ def load_object(file_path: Path):
 def save_json(file_path: Path, data: dict):
     """Method to dump data to a json file"""
     try:
+        create_directories([file_path], is_file_path=True)
         with open(file_path, "w", encoding="utf8") as file:
             json.dump(data, file, indent=4)
         logger.info("json file saved at: %s", file_path)
