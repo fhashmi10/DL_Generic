@@ -12,7 +12,7 @@ class ModelTrainerPipeline:
     def train(self):
         """Method to perfom model training"""
         try:
-            config=ConfigurationManager.instance()
+            config=ConfigurationManager()
             model_callback = ModelCallbacks(config=config.get_callback_config())
             callback_list = model_callback.get_callbacks()
 

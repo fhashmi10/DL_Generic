@@ -11,7 +11,7 @@ class ModelBuilderPipeline:
     def build(self):
         """Method to build model"""
         try:
-            config=ConfigurationManager.instance()
+            config=ConfigurationManager()
             model_builder=ModelBuilder(config=config.get_model_config())
             model_builder.build_model()
         except Exception as ex:

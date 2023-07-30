@@ -13,7 +13,7 @@ class PredictionPipeline:
     def predict(self):
         """Method to perform prediction"""
         try:
-            config = ConfigurationManager.instance()
+            config = ConfigurationManager()
             model_predictor = ModelPredictor(train_config=config.get_train_config())
             prediction = model_predictor.predict(self.filename)
 
