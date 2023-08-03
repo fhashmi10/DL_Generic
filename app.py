@@ -28,7 +28,7 @@ def train():
         os.system("python main.py")
         return "Training done successfully!"
     except Exception as ex:
-        logger.exception("Error in prediction %s", ex)
+        logger.exception("Error in training %s", ex)
         return "Exception occured: Check logs"
 
 @app.route("/predict", methods=['POST'])
