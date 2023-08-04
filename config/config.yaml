@@ -10,6 +10,7 @@ model:
   base_model_path: artifacts/models/base_model/model.h5
   trained_model_path: artifacts/models/trained_model/model.h5
   evaluation_score_json_path: artifacts/models/evaluation_score/scores.json
+  mlflow_uri: https://dagshub.com/fhashmi10/ML_Generic.mlflow
 
 
 callback: 

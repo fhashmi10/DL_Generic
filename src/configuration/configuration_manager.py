@@ -95,7 +95,9 @@ class ConfigurationManager:
         try:
             eval_config = EvaluationConfig(
                 trained_model_path=self.config.model.trained_model_path,
-                evaluation_score_json_path=self.config.model.evaluation_score_json_path)
+                evaluation_score_json_path=self.config.model.evaluation_score_json_path,
+                track_params=self.params,
+                mlflow_uri=self.config.model.mlflow_uri)
             return eval_config
         except AttributeError as ex:
             logger.exception("Error finding attribute: %s", ex)

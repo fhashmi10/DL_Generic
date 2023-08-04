@@ -48,3 +48,5 @@ class EvaluationConfig:
     """Class to map evaluation config"""
     trained_model_path: Path
     evaluation_score_json_path: Path
+    track_params: dict
+    mlflow_uri: str

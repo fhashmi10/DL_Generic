@@ -10,6 +10,7 @@ __pycache__/
 .Python
 artifacts/
 logs/
+mlruns/
 build/
 develop-eggs/
 dist/
